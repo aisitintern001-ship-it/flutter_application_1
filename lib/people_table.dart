@@ -25,18 +25,37 @@ class PeopleTable extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-          // vertical scrolling only if needed
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            alignment: Alignment.topLeft,
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: DataTable(
               columnSpacing: 18,
-              dataTextStyle: TextStyle(fontSize: 15),
-              columns: const [
-                DataColumn(label: Text('First name', style: TextStyle(fontSize: 15))),
-                DataColumn(label: Text('Last name', style: TextStyle(fontSize : 15))),
-                DataColumn(label: Text('Gender', style: TextStyle(fontSize : 15))),
-                DataColumn(label: Text('Date Of Birth', style: TextStyle(fontSize  : 15))),
+              dataTextStyle: TextStyle(fontSize: fontSize),
+              columns: [
+                DataColumn(
+                  label: Text(
+                    'First name',
+                    style: TextStyle(fontSize: fontSize),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Last name',
+                    style: TextStyle(fontSize: fontSize),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Gender',
+                    style: TextStyle(fontSize: fontSize),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Date Of Birth',
+                    style: TextStyle(fontSize: fontSize),
+                  ),
+                ),
               ],
               rows: people
                   .asMap()

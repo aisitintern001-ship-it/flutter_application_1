@@ -42,13 +42,37 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _deleteSelected() {
-    if (_selectedPeople.isNotEmpty) {
+  Future<void> _deleteSelected() async {
+    if (_selectedPeople.isEmpty) return;
+
+    final toDelete = _selectedPeople.toList();
+
+    try {
+      // Call delete API for each selected person
+      for (final person in toDelete) {
+        if (person.id.isNotEmpty) {
+          await ApiService.deleteEmployee(person.id);
+        }
+      }
+
+      // Reload list from API to ensure UI matches backend
+      await _loadPeople();
+
       setState(() {
-        _people.removeWhere((p) => _selectedPeople.contains(p));
         _selectedPeople.clear();
       });
-      _savePeople();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Selected employees deleted successfully.')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error deleting employees: ${e.toString()}')),
+        );
+      }
     }
   }
 
@@ -178,17 +202,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 const SizedBox(height: 40),
                  const Spacer(),
-                 if (_selectedPeople.isNotEmpty) ...[
-                   const SizedBox(width: 2),
-                   ElevatedButton(
-                     onPressed: _deleteSelected,
-                     style: ElevatedButton.styleFrom(
-                       backgroundColor: Colors.red,
-                       foregroundColor: Colors.white,
-                     ),
-                     child: const Text('Delete'),
-                   ),
-                 ],
+                if (_selectedPeople.isNotEmpty) ...[
+                  const SizedBox(width: 2),
+                  ElevatedButton(
+                    onPressed: () => _deleteSelected(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Delete'),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 12),

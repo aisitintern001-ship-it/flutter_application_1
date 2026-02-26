@@ -71,11 +71,17 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 200) {
+      // Treat common success codes as success (200 OK, 202 Accepted, 204 No Content)
+      if (response.statusCode == 200 ||
+          response.statusCode == 202 ||
+          response.statusCode == 204) {
         return true;
-      } else {
-        throw Exception('Failed to delete employee: ${response.statusCode}');
       }
+
+      // Log details to help debug issues like 404s from the backend
+      print(
+          'Delete failed. Status: ${response.statusCode}, body: ${response.body}');
+      throw Exception('Failed to delete employee: ${response.statusCode}');
     } catch (e) {
       throw Exception('Error: $e');
     }
