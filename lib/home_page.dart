@@ -102,11 +102,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _showAddDialog() {
-    showAddPersonDialog(context, (person) {
-      setState(() {
-        _people.add(person);
-      });
-      _savePeople();
+    showAddPersonDialog(context, (person) async {
+      try {
+        final success = await ApiService.addEmployee(person);
+        if (success) {
+          await _loadPeople(); // reload from API
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Employee added successfully!')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to add employee.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: \\${e.toString()}')),
+        );
+      }
     });
   }
 
