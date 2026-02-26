@@ -24,16 +24,16 @@ class Person {
       dob.hashCode;
 
   Map<String, dynamic> toJson() => {
-        'firstName': firstName,
-        'lastName': lastName,
+        'first_name': firstName,
+        'last_name': lastName,
         'gender': gender,
-        'dob': dob,
+        'date_of_birth': dob,
       };
 
   factory Person.fromJson(Map<String, dynamic> json) => Person(
-        json['firstName'] as String,
-        json['lastName'] as String,
-        json['gender'] as String,
-        json['dob'] as String,
+        json['first_name'] as String? ?? '',
+        json['last_name'] as String? ?? '',
+        json['gender'] as String? ?? '',
+        json['date_of_birth'] as String? ?? '',
       );
 }

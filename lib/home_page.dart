@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api_service.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +18,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Person> _people = [
-    Person('John', 'Doe', 'Male', '1990-01-01'),
-    Person('Jane', 'Smith', 'Female', '1992-05-15'),
-  ];
+  List<Person> _people = [];
 
   // UI state
   final Set<Person> _selectedPeople = {}; // updated via long press
@@ -34,16 +32,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _loadPeople() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString('people');
-    if (data != null) {
-      final List<dynamic> decoded = jsonDecode(data);
+    try {
+      final employees = await ApiService.getAllEmployees();
       setState(() {
-        _people = decoded.map((item) => Person.fromJson(item as Map<String, dynamic>)).toList();
+        _people = employees.map((e) => Person.fromJson(e)).toList();
       });
-    } else {
-      // Save initial data
-      await _savePeople();
+    } catch (e) {
+      print('Error loading employees: $e');
     }
   }
 
