@@ -72,10 +72,23 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showEditDialog(int index) {
     // clear any selection when editing
     _selectedPeople.clear();
-    showEditPersonDialog(context, index, _people[index], (i, person) {
-      setState(() {
-        _people[i] = person;
-      });
+    showEditPersonDialog(context, index, _people[index], (i, person) async {
+      try {
+        // send the actual UUID (string) to the backend
+        final success = await ApiService.updateEmployee(_people[i].id, person);
+        if (success) {
+          setState(() {
+            _people[i] = person;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Employee updated successfully!')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
       _savePeople();
     });
   }

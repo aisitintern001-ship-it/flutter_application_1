@@ -81,6 +81,7 @@ Future<void> showAddPersonDialog(
           ElevatedButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
+              // id will be assigned by backend; leave it blank here
               onAdd(Person(
                 first.text,
                 last.text,

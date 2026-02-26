@@ -8,7 +8,9 @@ Future<void> showEditPersonDialog(
     void Function(int, Person) onSave) async {
   final first = TextEditingController(text: person.firstName);
   final last = TextEditingController(text: person.lastName);
-  String selectedGender = person.gender;
+  String selectedGender = ['Male', 'Female', 'Other'].contains(person.gender) 
+    ? person.gender 
+    : 'Male';
   final dob = TextEditingController(text: person.dob);
 
   await showDialog(
@@ -44,6 +46,8 @@ Future<void> showEditPersonDialog(
                 items: const [
                   DropdownMenuItem(value: 'Male', child: Text('Male')),
                   DropdownMenuItem(value: 'Female', child: Text('Female')),
+                   DropdownMenuItem(value: 'Other', child: Text('Other')),
+  
                 ],
                 onChanged: (value) {
                   setDialogState(() {
@@ -91,6 +95,7 @@ Future<void> showEditPersonDialog(
                     last.text,
                     selectedGender,
                     dob.text,
+                    person.id,
                   ));
             },
             child: const Text('Save'),
