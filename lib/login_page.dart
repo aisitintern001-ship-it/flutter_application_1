@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'services/api_service.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
- void _handleLogin() async {
+void _handleLogin() async {
   final email = _userController.text.trim();
   final password = _passController.text.trim();
 
@@ -31,15 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   try {
-    final token = await ApiService.login(email, password);
+    final success = await ApiService.login(email, password);
 
-    if (token != null) {
-      debugPrint("JWT Token: $token");
+    if (success) {
+      debugPrint('Login success for $email');
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => const MyHomePage(
-              title: 'Flutter Demonstration Home Page'),
+            title: 'Flutter Demonstration Home Page',
+          ),
         ),
       );
     } else {
@@ -52,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       SnackBar(content: Text('Error: $e')),
     );
   }
+
   
   debugPrint('login email="$email" password length=${password.length}');
 

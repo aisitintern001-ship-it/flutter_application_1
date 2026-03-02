@@ -7,7 +7,7 @@ enum StatusType {
 }
 
 class StatusPill extends StatelessWidget {
-  final StatusType status;
+  final StatusType? status;
   final int? count;
   final double fontSize;
   final EdgeInsets padding;
@@ -22,7 +22,7 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final config = _getConfig(status);
+    final config = _getConfig(status ?? StatusType.approved);
 
     return Container(
       padding: padding,
