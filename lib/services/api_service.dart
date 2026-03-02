@@ -6,7 +6,29 @@ import 'dart:convert';
 
 class ApiService {
     // Add a new employee
-  static const String baseUrl = 'http://10.0.0.155:8000/api';
+  static const String baseUrl = 'http://10.0.0.36:8000/api';
+
+ // Login
+  static Future<bool> login(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to login: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 
     static Future<bool> addEmployee(Person person) async {
       try {
@@ -86,5 +108,10 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
+
+
+
+
+
 
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-
+import 'services/api_service.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,11 +19,41 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _handleLogin() {
-  final user = _userController.text;
-  final pass = _passController.text;
+ void _handleLogin() async {
+  final email = _userController.text.trim();
+  final password = _passController.text.trim();
+
+  if (email.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enter email and password')),
+    );
+    return;
+  }
+
+  try {
+    final token = await ApiService.login(email, password);
+
+    if (token != null) {
+      debugPrint("JWT Token: $token");
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => const MyHomePage(
+              title: 'Flutter Demonstration Home Page'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid credentials')),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: $e')),
+    );
+  }
   
-  debugPrint('login user="$user" password length=${pass.length}');
+  debugPrint('login email="$email" password length=${password.length}');
 
   Navigator.of(context).pushReplacement(
     MaterialPageRoute(
