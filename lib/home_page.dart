@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/api_service.dart';
+import 'package:flutter_application_1/widget/status_pill.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,11 +36,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _loadPeople() async {
     try {
       final employees = await ApiService.getAllEmployees();
+      List<Person> loaded = employees.map((e) => Person.fromJson(e)).toList();
+      // Change at least 5 to declined and 3 to pending for demo
+      int declined = 0, pending = 0;
+      for (int i = 0; i < loaded.length; i++) {
+        if (declined < 5) {
+          loaded[i] = Person(
+            loaded[i].firstName,
+            loaded[i].lastName,
+            loaded[i].gender,
+            loaded[i].dob,
+            loaded[i].id,
+            StatusType.declined,
+          );
+          declined++;
+        } else if (pending < 3) {
+          loaded[i] = Person(
+            loaded[i].firstName,
+            loaded[i].lastName,
+            loaded[i].gender,
+            loaded[i].dob,
+            loaded[i].id,
+            StatusType.pending,
+          );
+          pending++;
+        }
+      }
       setState(() {
-        _people = employees.map((e) => Person.fromJson(e)).toList();
+        _people = loaded;
       });
     } catch (e) {
-      print('Error loading employees: $e');
+      if (kDebugMode) {
+        print('Error loading employees: $e');
+      }
     }
   }
 
@@ -104,11 +134,13 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             _people[i] = person;
           });
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Employee updated successfully!')),
           );
         }
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
@@ -144,15 +176,18 @@ class _MyHomePageState extends State<MyHomePage> {
         final success = await ApiService.addEmployee(person);
         if (success) {
           await _loadPeople(); // reload from API
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Employee added successfully!')),
           );
         } else {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Failed to add employee.')),
           );
         }
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: \\${e.toString()}')),
         );

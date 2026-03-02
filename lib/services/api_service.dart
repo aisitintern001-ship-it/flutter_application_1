@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_application_1/models/person.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -6,6 +7,7 @@ import 'dart:convert';
 
 class ApiService {
     // Add a new employee
+<<<<<<< Updated upstream
   static const String baseUrl = 'http://10.0.0.36:8000/api';
 
  // Login
@@ -29,6 +31,9 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
+=======
+  static const String baseUrl = 'http://localhost:8000/api';
+>>>>>>> Stashed changes
 
     static Future<bool> addEmployee(Person person) async {
       try {
@@ -101,8 +106,10 @@ class ApiService {
       }
 
       // Log details to help debug issues like 404s from the backend
-      print(
+      if (kDebugMode) {
+        print(
           'Delete failed. Status: ${response.statusCode}, body: ${response.body}');
+      }
       throw Exception('Failed to delete employee: ${response.statusCode}');
     } catch (e) {
       throw Exception('Error: $e');

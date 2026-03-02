@@ -1,9 +1,12 @@
+import '../widget/status_pill.dart';
+
 class Person {
   final String id;
   final String firstName;
   final String lastName;
   final String gender;
   final String dob;
+  final StatusType status;
 
   // id is optional, required for update/delete but not shown in UI
   Person(
@@ -12,6 +15,7 @@ class Person {
     this.gender,
     this.dob, [
     this.id = '',
+    this.status = StatusType.approved,
   ]);
 
   @override
@@ -22,7 +26,8 @@ class Person {
         other.firstName == firstName &&
         other.lastName == lastName &&
         other.gender == gender &&
-        other.dob == dob;
+        other.dob == dob &&
+        other.status == status;
   }
 
   @override
@@ -31,7 +36,8 @@ class Person {
       firstName.hashCode ^
       lastName.hashCode ^
       gender.hashCode ^
-      dob.hashCode;
+      dob.hashCode ^
+      status.hashCode;
 
   Map<String, dynamic> toJson() {
     final m = <String, dynamic>{
@@ -39,6 +45,7 @@ class Person {
       'last_name': lastName,
       'gender': gender,
       'date_of_birth': dob,
+      'status': status.name,
     };
     if (id.isNotEmpty) m['id'] = id;
     return m;
@@ -53,6 +60,7 @@ class Person {
         json['gender'] as String? ?? '',
         json['date_of_birth'] as String? ?? '',
         json['id'] as String? ?? '',
+        json['status'] == 'declined' ? StatusType.declined : json['status'] == 'pending' ? StatusType.pending : StatusType.approved,
       );
       
 }
